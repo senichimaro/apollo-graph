@@ -47,3 +47,35 @@ export default function App({ Component, pageProps }) {
   );
 }
 ```
+
+## 2 and 3. Create the GraphQL query and Implement the useQuery hook
+
+The GraphQL query is created into a variable. Introduced then into the useQuery hook, which provides the data, error and loading objects to handle the process of querying.
+
+```js
+import { useQuery, gql } from "@apollo/client";
+
+const QUERY = gql`
+  query Query {
+    getPosts {
+      id
+      title
+    }
+  }
+`;
+
+export default function Home() {
+  const { loading, error, data } = useQuery(QUERY);
+  if (loading) return <p>loading...</p>;
+  if (error) return <p>...error :(</p>;
+  return (
+    <>Posts
+        <ol>
+          {data.getPosts.map((post) => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ol>
+    </>
+  );
+}
+```
