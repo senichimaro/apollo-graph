@@ -1,38 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Implement Apollo Client
 
-## Getting Started
+Apollo in the client side, use the Context API for state management and follows a similar pattern.
 
-First, run the development server:
+It uses its built-in hook and variables holding GraphQL queries to request for data. In the meantime, It handles the loading and error states. Finally, returns the data or an error message.
+
+One of the great features of Apollo is that It solves the N+1 problem, what It does through its InMemoryCache object.
+
+Create an Apollo Client in three steps:
+
+1. Set up the Client
+2. Create the GraphQL query
+3. Implement the useQuery hook
+
+## Packages 
+
+1. core: graphql
+2. utils: @apollo/client
+      1. Apollo React Hook
+      2. Local State Manager
+      3. In memory Cache
+      4. Error Handling
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+npm i graphql @apollo/client
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 1. Set up the Client
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+The basic idea is wrap the whole in a component which saves, retrieves and makes data shareable. This wrapper provides a context where the data is available.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Apollo implements that idea plus a cache and the target URL of the server to be queried. The Cache pairs requests and stored data avoiding unnecessary requests.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```js
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+const client = new ApolloClient({
+  uri: "http://localhost:4000",
+  cache: new InMemoryCache()
+})
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+export default function App({ Component, pageProps }) {
+  return (
+    <ApolloProvider client={client}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  );
+}
+```
