@@ -79,3 +79,44 @@ export default function Home() {
   );
 }
 ```
+
+## Extra: Implementation of getPost(id: Int)
+
+* Required changes: Change the "id" related fields in the server Schema from "ID" to "Int".
+
+Dynamic Queries use variables, so the query should implement this variable and give it a value. This type of query use the same useQuery hook with an extra object with a "variables" key which should match the variable name.
+
+```js
+import { useRouter } from "next/router";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_POST_BY_ID = gql`
+  query Query($getPostId: Int) {
+    getPost(id: $getPostId) {
+      id
+      title
+      body
+    }
+  }
+`;
+
+export default function Post() {
+  const router = useRouter();
+  return Object.keys(router.query).length ? <Page getPostId={router.query.id} /> : "Loading..."
+}
+
+const Page = ({ getPostId }) => {
+  const { loading, error, data } = useQuery(GET_POST_BY_ID, {
+    variables: { getPostId: parseInt(getPostId) },
+  });
+  if (loading) return "Querying...";
+  if (error) return "Error...";
+  return (
+    <ul>
+      <li>ID: {data.getPost.id}</li>
+      <li>Title: {data.getPost.title}</li>
+      <li>Body: {data.getPost.body}</li>
+    </ul>
+  );
+};
+```
