@@ -5,13 +5,13 @@ FROM node:17-alpine
 WORKDIR /client
 
 # Image Actions
-COPY package.json /client
+COPY package.json .
 
 # Buildtime Command Executions
 RUN npm install
 
 # Image Actions
-COPY . /client
+COPY . .
 
 # Container Ports Exposure
 EXPOSE 3000
