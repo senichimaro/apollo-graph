@@ -120,3 +120,9 @@ const Page = ({ getPostId }) => {
   );
 };
 ```
+
+---
+
+# Run from Docker
+
+* Server puzzledotscode/poc_client
